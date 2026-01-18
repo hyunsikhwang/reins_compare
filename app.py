@@ -103,9 +103,39 @@ chart = (
         legend_opts=opts.LegendOpts(pos_top="10%"),
         xaxis_opts=opts.AxisOpts(boundary_gap=False),
         yaxis_opts=opts.AxisOpts(name="Market Cap (B USD)"),
-        datazoom_opts=[opts.DataZoomOpts(), opts.DataZoomOpts(type_="inside")],
+        datazoom_opts=[
+            opts.DataZoomOpts(start_value=0, end_value=100), 
+            opts.DataZoomOpts(type_="inside", start_value=0, end_value=100)
+        ],
     )
 )
 
-# 4. Streamlit에서 출력
+# 4. 시가총액 배수 계산 (Swiss Re / RGA)
+df['Ratio'] = df['SREN'] / df['RGA']
+
+ratio_chart = (
+    Line(init_opts=opts.InitOpts(width="100%", height="400px", theme=ThemeType.WHITE))
+    .add_xaxis(xaxis_data=x_data)
+    .add_yaxis(
+        "MCap Ratio (Swiss Re / RGA)", 
+        df['Ratio'].round(2).tolist(), 
+        color="#2E8B57",
+        linestyle_opts=opts.LineStyleOpts(width=3)
+    )
+    .set_global_opts(
+        title_opts=opts.TitleOpts(title="Market Cap Ratio (Swiss Re / RGA)", pos_left="center"),
+        tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="cross"),
+        legend_opts=opts.LegendOpts(pos_top="10%"),
+        xaxis_opts=opts.AxisOpts(boundary_gap=False),
+        yaxis_opts=opts.AxisOpts(name="Ratio (x)"),
+        datazoom_opts=[
+            opts.DataZoomOpts(start_value=0, end_value=100), 
+            opts.DataZoomOpts(type_="inside", start_value=0, end_value=100)
+        ],
+    )
+)
+
+# 5. Streamlit에서 출력
 st_pyecharts(chart, height="600px")
+st.markdown("---")
+st_pyecharts(ratio_chart, height="400px")
