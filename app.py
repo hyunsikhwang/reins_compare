@@ -129,8 +129,8 @@ ratio_chart = (
         xaxis_opts=opts.AxisOpts(boundary_gap=False),
         yaxis_opts=opts.AxisOpts(name="Ratio (x)"),
         datazoom_opts=[
-            opts.DataZoomOpts(start_value=0, end_value=100), 
-            opts.DataZoomOpts(type_="inside", start_value=0, end_value=100)
+            opts.DataZoomOpts(range_start=0, range_end=100), 
+            opts.DataZoomOpts(type_="inside", range_start=0, range_end=100)
         ],
     )
 )
