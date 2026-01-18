@@ -4,7 +4,7 @@ from pyecharts import options as opts
 from pyecharts.charts import Line
 from pyecharts.globals import ThemeType
 import streamlit as st
-from streamlit_pyecharts import st_pyecharts
+from streamlit_echarts import st_pyecharts
 
 # Streamlit Page Config
 st.set_page_config(page_title="Swiss Re vs RGA Comparison", layout="wide")

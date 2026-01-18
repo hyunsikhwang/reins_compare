@@ -2,4 +2,6 @@ streamlit
 yfinance
 pandas
 pyecharts
-streamlit-pyecharts
+streamlit-echarts
+lxml
+requests
