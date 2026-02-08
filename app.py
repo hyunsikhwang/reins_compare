@@ -9,7 +9,7 @@ from streamlit_echarts import st_pyecharts
 # Streamlit Page Config
 st.set_page_config(page_title="Swiss Re vs RGA Comparison", layout="wide")
 
-st.title("Swiss Re vs RGA: Market Cap & Return (2025-2026)")
+st.title("Swiss Re vs RGA: Market Cap & Return (2024-2026)")
 
 # 1. 데이터 수집 함수
 def get_market_data_final(ticker_symbol, start_date):
@@ -32,7 +32,7 @@ def get_market_data_final(ticker_symbol, start_date):
     return price, shares_aligned
 
 # 2. 데이터 처리
-start_date = "2025-01-01"
+start_date = "2024-01-01"
 
 with st.spinner("금융 데이터를 수집 중입니다..."):
     sren_price, sren_shares = get_market_data_final("SREN.SW", start_date)
@@ -62,6 +62,7 @@ chart = (
         "Swiss Re MCap (B USD)", 
         df['SREN'].round(2).tolist(), 
         yaxis_index=0, 
+        is_smooth=True,
         color="#003366", 
         linestyle_opts=opts.LineStyleOpts(width=3)
     )
@@ -69,6 +70,7 @@ chart = (
         "RGA MCap (B USD)", 
         df['RGA'].round(2).tolist(), 
         yaxis_index=0, 
+        is_smooth=True,
         color="#C8102E", 
         linestyle_opts=opts.LineStyleOpts(width=3)
     )
@@ -85,6 +87,7 @@ chart = (
         "Swiss Re Return (%)", 
         df_return['SREN'].round(2).tolist(), 
         yaxis_index=1, 
+        is_smooth=True,
         color="#003366", 
         is_symbol_show=False, 
         linestyle_opts=opts.LineStyleOpts(width=2, type_="dashed", opacity=0.5)
@@ -93,12 +96,13 @@ chart = (
         "RGA Return (%)", 
         df_return['RGA'].round(2).tolist(), 
         yaxis_index=1, 
+        is_smooth=True,
         color="#C8102E", 
         is_symbol_show=False, 
         linestyle_opts=opts.LineStyleOpts(width=2, type_="dashed", opacity=0.5)
     )
     .set_global_opts(
-        title_opts=opts.TitleOpts(title="Swiss Re vs RGA: Market Cap & Return (2025-2026)", pos_left="center"),
+        title_opts=opts.TitleOpts(title="Swiss Re vs RGA: Market Cap & Return (2024-2026)", pos_left="center"),
         tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="cross"),
         legend_opts=opts.LegendOpts(pos_top="10%"),
         xaxis_opts=opts.AxisOpts(boundary_gap=False),
@@ -119,6 +123,7 @@ ratio_chart = (
     .add_yaxis(
         "MCap Ratio (Swiss Re / RGA)", 
         df['Ratio'].round(2).tolist(), 
+        is_smooth=True,
         color="#2E8B57",
         linestyle_opts=opts.LineStyleOpts(width=3)
     )
