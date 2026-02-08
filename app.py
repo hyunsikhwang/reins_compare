@@ -37,9 +37,17 @@ def to_monthly_last_keep_start(df: pd.DataFrame, start_date: str) -> pd.DataFram
         return df
 
     work = df.sort_index()
-    monthly_last = work.groupby(work.index.to_period("M")).tail(1)
+    idx = work.index
+    period_index = idx.tz_localize(None).to_period("M") if getattr(idx, "tz", None) is not None else idx.to_period("M")
+    monthly_last = work.groupby(period_index).tail(1)
 
-    start_ts = pd.to_datetime(start_date)
+    start_ts = pd.Timestamp(start_date)
+    idx_tz = getattr(idx, "tz", None)
+    if idx_tz is not None:
+        start_ts = start_ts.tz_localize(idx_tz) if start_ts.tzinfo is None else start_ts.tz_convert(idx_tz)
+    elif start_ts.tzinfo is not None:
+        start_ts = start_ts.tz_localize(None)
+
     start_row = work.loc[work.index >= start_ts].head(1)
     if start_row.empty:
         start_row = work.head(1)
