@@ -31,6 +31,23 @@ def get_market_data_final(ticker_symbol, start_date):
     shares_aligned = shares_series.reindex(price.index, method='ffill').bfill()
     return price, shares_aligned
 
+def to_monthly_last_keep_start(df: pd.DataFrame, start_date: str) -> pd.DataFrame:
+    """월별 마지막 관측치를 사용하되, 시작일 기준 첫 포인트는 유지."""
+    if df is None or df.empty:
+        return df
+
+    work = df.sort_index()
+    monthly_last = work.groupby(work.index.to_period("M")).tail(1)
+
+    start_ts = pd.to_datetime(start_date)
+    start_row = work.loc[work.index >= start_ts].head(1)
+    if start_row.empty:
+        start_row = work.head(1)
+
+    out = pd.concat([start_row, monthly_last]).sort_index()
+    out = out[~out.index.duplicated(keep="first")]
+    return out
+
 # 2. 데이터 처리
 start_date = "2024-01-01"
 
@@ -49,7 +66,8 @@ with st.spinner("금융 데이터를 수집 중입니다..."):
     sren_mcap = (sren_price * sren_shares * fx_data.reindex(sren_price.index, method='ffill').bfill()) / 1e9
     rga_mcap = (rga_price * rga_shares) / 1e9
 
-    df = pd.DataFrame({'SREN': sren_mcap, 'RGA': rga_mcap}).ffill().dropna()
+    daily_df = pd.DataFrame({'SREN': sren_mcap, 'RGA': rga_mcap}).ffill().dropna()
+    df = to_monthly_last_keep_start(daily_df, start_date)
     df_return = (df / df.iloc[0] - 1) * 100
     x_data = df.index.strftime('%Y-%m-%d').tolist()
 
